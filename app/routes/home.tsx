@@ -1,5 +1,7 @@
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import { Link } from "react-router";
+import { Counter } from "~/components/Counter";
+import { Counter2 } from "~/components/Counter2";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +11,14 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <Welcome />;
+  return (
+    <div className="p-4">
+      <h1>Home</h1>
+      <Link to="/about">About</Link>
+      <Counter title="Counter 1" min={-5} max={5} />
+      <Counter title="Counter 2" max={100} delta={10} initial={1} />
+      <Counter2 />
+      {/* <a href="/about">About</a> */}
+    </div>
+  );
 }
