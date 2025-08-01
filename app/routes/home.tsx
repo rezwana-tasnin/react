@@ -2,6 +2,7 @@ import type { Route } from "./+types/home";
 import { Link } from "react-router";
 import { Counter } from "~/components/Counter";
 import { Counter2 } from "~/components/Counter2";
+import { Multiplier } from "~/components/Multiplier";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -18,6 +19,8 @@ export default function Home() {
       <Counter title="Counter 1" min={-5} max={5} />
       <Counter title="Counter 2" max={100} delta={10} initial={1} />
       <Counter2 />
+      <Multiplier num1={10} num2={10}></Multiplier>
+      <Multiplier num1={1} num2={5}></Multiplier>
       {/* <a href="/about">About</a> */}
     </div>
   );
