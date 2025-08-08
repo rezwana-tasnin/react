@@ -8,6 +8,15 @@ export default function About() {
     { name: "Jim", age: 23, town: "Paris" },
     { name: "Jill", age: 24, town: "Tokyo" },
   ];
+  console.log(
+    students,
+    students.map((item) => {
+      return {
+        ...item,
+        age: item.age + 1,
+      };
+    })
+  );
   return (
     <div>
       {students.map((student) => (
