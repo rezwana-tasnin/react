@@ -1,45 +1,37 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "~/components/Button";
 
 export default function Contacts() {
   //
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [index, setIndex] = useState(-1);
   const [search, setSearch] = useState("");
-
-  //
-  const [contacts, setContacts] = useState<any[]>([
-    {
-      name: "Zwana Tasnin",
-      phone: "+8801643257731",
-    },
-    {
-      name: "Rezwana Tasnin",
-      phone: "+8801643257731",
-    },
-    {
-      name: "RK Anik",
-      phone: "+8801568015679",
-    },
-    {
-      name: "Anik",
-      phone: "+8801568015679",
-    },
-  ]);
+  const [contacts, setContacts] = useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      return JSON.parse(localStorage.getItem("contacts") || "[]") || [];
+    }
+    return [];
+  });
 
   const loopedContacts = useMemo(() => {
     return contacts
       .filter((contact) => {
         return (
           contact.name.toLowerCase().includes(search.toLowerCase()) ||
-          contact.phone.includes(search)
+          contact.phone.includes(search) ||
+          contact.email?.toLowerCase().includes(search.toLowerCase())
         );
       })
       .sort((a, b) => {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       });
   }, [search, contacts]);
+
+  useEffect(() => {
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  }, [contacts]);
 
   //
   return (
@@ -108,6 +100,17 @@ export default function Contacts() {
             setPhone(e.target.value);
           }}
         />
+        <input
+          type="email"
+          name="email"
+          className="bg-rose-900 p-2 placeholder:text-neutral-300 rounded-md w-full"
+          placeholder="Enter email address"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+        />
+
         <div className="flex justify-end">
           <Button
             onClick={() => {
@@ -115,11 +118,12 @@ export default function Contacts() {
                 if (index > -1) {
                   setContacts((old) => {
                     const contacts = [...old];
-                    contacts.splice(index, 1, { name, phone });
+                    contacts.splice(index, 1, { name, phone, email });
                     return contacts;
                   });
                   setName("");
                   setPhone("");
+                  setEmail("");
                   setIndex(-1);
                 } else {
                   setContacts([
@@ -127,10 +131,12 @@ export default function Contacts() {
                     {
                       name,
                       phone,
+                      email,
                     },
                   ]);
                   setName("");
                   setPhone("");
+                  setEmail("");
                 }
               }
             }}
@@ -170,55 +176,66 @@ export default function Contacts() {
       </ul> */}
 
       <ul className="mt-4 bg-rose-800 rounded-md">
-        {loopedContacts.map((contact, index) => {
-          return (
-            <li
-              key={index}
-              className="hover:bg-rose-900 rounded-md p-2 flex gap-4 items-center"
-            >
-              <div className="bg-rose-400 h-9 w-9 rounded-full flex items-center justify-center flex-none">
-                {contact.name[0]}
-              </div>
-              <div>
-                <div className="font-bold">{contact.name}</div>
-                <div className="text-neutral-300 text-sm">{contact.phone}</div>
-              </div>
-              <div className="flex-1 flex justify-end gap-1">
-                <a
-                  href={`tel:${contact.phone}`}
-                  className="w-6 h-6 bg-rose-950 rounded text-xs flex items-center justify-center"
-                >
-                  📞
-                </a>
-                <button
-                  className="w-6 h-6 bg-rose-950 rounded text-xs cursor-pointer"
-                  onClick={() => {
-                    setName(contact.name);
-                    setPhone(contact.phone);
-                    setIndex(index);
-                  }}
-                >
-                  ✏️
-                </button>
-                <button
-                  className="w-6 h-6 bg-rose-950 rounded text-xs cursor-pointer"
-                  onClick={() => {
-                    if (confirm("Are you sure to delete?")) {
-                      console.log(contact, index);
-                      setContacts((old) => {
-                        const contacts = [...old];
-                        contacts.splice(index, 1);
-                        return contacts;
-                      });
-                    }
-                  }}
-                >
-                  ❌
-                </button>
-              </div>
-            </li>
-          );
-        })}
+        {loopedContacts.length ? (
+          loopedContacts.map((contact, index) => {
+            return (
+              <li
+                key={index}
+                className="hover:bg-rose-900 rounded-md p-2 flex gap-4 items-center"
+              >
+                <div className="bg-rose-400 h-9 w-9 rounded-full flex items-center justify-center flex-none">
+                  {contact.name[0]}
+                </div>
+                <div>
+                  <div className="font-bold">{contact.name}</div>
+                  <div className="text-neutral-300 text-sm">
+                    {contact.phone}
+                  </div>
+                  <div className="text-neutral-300 text-sm">
+                    {contact.email}
+                  </div>
+                </div>
+                <div className="flex-1 flex justify-end gap-1">
+                  <a
+                    href={`tel:${contact.phone}`}
+                    className="w-6 h-6 bg-rose-950 rounded text-xs flex items-center justify-center"
+                  >
+                    📞
+                  </a>
+                  <button
+                    className="w-6 h-6 bg-rose-950 rounded text-xs cursor-pointer"
+                    onClick={() => {
+                      setName(contact.name);
+                      setPhone(contact.phone);
+                      setIndex(index);
+                    }}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    className="w-6 h-6 bg-rose-950 rounded text-xs cursor-pointer"
+                    onClick={() => {
+                      if (confirm("Are you sure to delete?")) {
+                        console.log(contact, index);
+                        setContacts((old) => {
+                          const contacts = [...old];
+                          contacts.splice(index, 1);
+                          return contacts;
+                        });
+                      }
+                    }}
+                  >
+                    ❌
+                  </button>
+                </div>
+              </li>
+            );
+          })
+        ) : (
+          <div className="text-center p-2">
+            {search ? "Not Found!" : "No contacts"}
+          </div>
+        )}
       </ul>
     </div>
   );
