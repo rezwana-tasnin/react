@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "~/components/Button";
+import { Input } from "~/components/Input";
 
 export default function Contacts() {
   //
@@ -38,11 +39,11 @@ export default function Contacts() {
     <div className="p-4 max-w-md mx-auto">
       <div className="text-xl font-bold mb-4">Contacts</div>
 
-      {/* <div className="space-y-4 bg-rose-800 p-4 rounded-md mt-4">
+      {/* <div className="space-y-4 bg-neutral-800 p-4 rounded-md mt-4">
         <input
           type="text"
           name="name"
-          className="bg-rose-900 p-2 block w-full placeholder:text-neutral-300 border-0 outline-0 text-white rounded-md"
+          className="bg-neutral-900 p-2 block w-full placeholder:text-neutral-300 border-0 outline-0 text-white rounded-md"
           placeholder="Enter contact name"
           value={name}
           onChange={(e) => {
@@ -52,7 +53,7 @@ export default function Contacts() {
         <input
           type="tel"
           name="phone"
-          className="bg-rose-900 p-2 block w-full placeholder:text-neutral-300 border-0 outline-0 text-white rounded-md"
+          className="bg-neutral-900 p-2 block w-full placeholder:text-neutral-300 border-0 outline-0 text-white rounded-md"
           placeholder="Enter phone number"
           value={phone}
           onChange={(e) => {
@@ -79,36 +80,26 @@ export default function Contacts() {
         </div>
       </div> */}
 
-      <div className="space-y-4 bg-rose-800 p-4 rounded-md mt-4 ">
-        <input
-          type="text"
+      <div className="space-y-4 bg-neutral-800 p-4 rounded-md mt-4">
+        <Input
           name="name"
-          className="bg-rose-900 p-2 placeholder:text-neutral-300 rounded-md w-full"
           placeholder="Enter contact name"
           value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
+          onChange={setName}
         />
-        <input
+        <Input
           type="tel"
           name="phone"
-          className="bg-rose-900 p-2 placeholder:text-neutral-300 rounded-md w-full"
           placeholder="Enter phone number"
           value={phone}
-          onChange={(e) => {
-            setPhone(e.target.value);
-          }}
+          onChange={setPhone}
         />
-        <input
+        <Input
           type="email"
           name="email"
-          className="bg-rose-900 p-2 placeholder:text-neutral-300 rounded-md w-full"
           placeholder="Enter email address"
           value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
+          onChange={setEmail}
         />
 
         <div className="flex justify-end">
@@ -145,25 +136,18 @@ export default function Contacts() {
           </Button>
         </div>
       </div>
-      <div>
-        <input
-          className="w-full p-2 mt-4 rounded-md placeholder:text-neutral-300 bg-rose-800"
-          placeholder="Search..."
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-        />
+      <div className="mt-4">
+        <Input placeholder="Search..." value={search} onChange={setSearch} />
       </div>
       {/* <div className="mt-4 p-4">{JSON.stringify(contacts)}</div> */}
-      {/* <ul className="mt-4 space-y-1 bg-rose-800 rounded-md py-2">
+      {/* <ul className="mt-4 space-y-1 bg-neutral-800 rounded-md py-2">
         {loopedContacts.map((contact, index) => {
           return (
             <li
               key={index}
-              className="flex items-center gap-4 hover:bg-rose-900 px-2 py-1"
+              className="flex items-center gap-4 hover:bg-neutral-900 px-2 py-1"
             >
-              <div className="w-10 h-10 bg-rose-500 rounded-full flex items-center justify-center font-bold text-rose-900">
+              <div className="w-10 h-10 bg-neutral-500 rounded-full flex items-center justify-center font-bold text-neutral-900">
                 {contact.name[0]}
               </div>
               <div>
@@ -175,15 +159,15 @@ export default function Contacts() {
         })}
       </ul> */}
 
-      <ul className="mt-4 bg-rose-800 rounded-md">
+      <ul className="mt-4 bg-neutral-800 rounded-md">
         {loopedContacts.length ? (
           loopedContacts.map((contact, index) => {
             return (
               <li
                 key={index}
-                className="hover:bg-rose-900 rounded-md p-2 flex gap-4 items-center"
+                className="hover:bg-neutral-900 rounded-md p-2 flex gap-4 items-center"
               >
-                <div className="bg-rose-400 h-9 w-9 rounded-full flex items-center justify-center flex-none">
+                <div className="bg-neutral-400 h-9 w-9 rounded-full flex items-center justify-center flex-none">
                   {contact.name[0]}
                 </div>
                 <div>
@@ -198,12 +182,12 @@ export default function Contacts() {
                 <div className="flex-1 flex justify-end gap-1">
                   <a
                     href={`tel:${contact.phone}`}
-                    className="w-6 h-6 bg-rose-950 rounded text-xs flex items-center justify-center"
+                    className="w-6 h-6 bg-neutral-950 rounded text-xs flex items-center justify-center"
                   >
                     📞
                   </a>
                   <button
-                    className="w-6 h-6 bg-rose-950 rounded text-xs cursor-pointer"
+                    className="w-6 h-6 bg-neutral-950 rounded text-xs cursor-pointer"
                     onClick={() => {
                       setName(contact.name);
                       setPhone(contact.phone);
@@ -213,7 +197,7 @@ export default function Contacts() {
                     ✏️
                   </button>
                   <button
-                    className="w-6 h-6 bg-rose-950 rounded text-xs cursor-pointer"
+                    className="w-6 h-6 bg-neutral-950 rounded text-xs cursor-pointer"
                     onClick={() => {
                       if (confirm("Are you sure to delete?")) {
                         console.log(contact, index);
