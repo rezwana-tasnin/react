@@ -40,6 +40,12 @@ export default function Home() {
         >
           Filter
         </Link>
+        <Link
+          className="hover:font-bold hover:underline hover:text-rose-100 "
+          to="/quiz"
+        >
+          Quiz
+        </Link>
       </div>
       <Counter title="Counter 1" min={-5} max={5} />
       <Counter title="Counter 2" max={100} delta={10} initial={1} />
