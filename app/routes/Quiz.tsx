@@ -1,45 +1,125 @@
-import { Fragment, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
+import { useLocalStorage } from "react-use";
+
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import questionsJson from "~/data/questions.json";
 import { cn } from "~/utils/cn";
 
-const questions = questionsJson.sort(() => Math.random() - 0.5).slice(0, 10);
+type TUser = {
+  name: string;
+};
+
+type TQuestionOption = {
+  id: number;
+  title: string;
+};
+
+type TQuestion = {
+  id: number;
+  title: string;
+  rightAnswer: number;
+  options: TQuestionOption[];
+};
+
+type TQuiz = {
+  id: number;
+  date: Date;
+  status: "pending" | "running" | "done";
+  examinee: TUser;
+  optionIds: number[];
+  //
+  questionIds: number[];
+  questionIndex: number;
+};
+
+const getRandomQuestionIds = (count = 5) => {
+  return questionsJson
+    .sort(() => Math.random() - 0.5)
+    .slice(0, count)
+    .map((q) => q.id);
+};
 
 export default function Quiz() {
   //
-  const [index, setIndex] = useState(0);
-  const [status, setStatus] = useState("new");
+
   const [name, setName] = useState("");
-
-  const [score, setScore] = useState(0);
-
+  const [result, setResult] = useState([]);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [quizzes = [], setQuizzes] = useLocalStorage<TQuiz[]>("quizzes", []);
 
-  const question = questions[index];
+  const quiz = useMemo(() => {
+    const runningQuiz = quizzes.find((quiz) => {
+      return quiz.status === "running" || quiz.status === "pending";
+    });
+    if (runningQuiz) return runningQuiz;
+    const pendingQuiz: TQuiz = {
+      id: Date.now(),
+      date: new Date(),
+      examinee: { name: "" },
+      optionIds: [],
+      status: "pending",
+      questionIndex: 0,
+      questionIds: getRandomQuestionIds(),
+    };
+    return pendingQuiz;
+  }, [quizzes]);
+
+  const questions = questionsJson.filter((question) => {
+    return quiz.questionIds.includes(question.id);
+  });
+
+  const question = questions[quiz.questionIndex];
+
+  const onStartQuiz = () => {
+    const newQuiz: TQuiz = {
+      id: Date.now(),
+      date: new Date(),
+      examinee: {
+        name: name,
+      },
+      optionIds: [],
+      status: "running",
+      questionIndex: 0,
+      questionIds: getRandomQuestionIds(),
+    };
+    setQuizzes([newQuiz, ...quizzes]);
+  };
+
+  const updateQuiz = (updatedQuiz: Partial<TQuiz>) => {
+    setQuizzes((quizzes = []) => {
+      return quizzes.map((item) => {
+        if (item.id === quiz.id) {
+          return {
+            ...item,
+            ...updatedQuiz,
+          };
+        }
+        return item;
+      });
+    });
+  };
 
   return (
     <div className="max-w-xl mx-auto p-4 flex flex-col h-[calc(100vh-5rem)] px-4">
       <div className="underline text-2xl font-bold text-center">Quiz Test</div>
       <div className="mt-8 flex-1 flex flex-col">
-        {status === "new" && (
+        {quiz.status === "pending" && (
           <div className="flex flex-col space-y-12">
             <input
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
               placeholder="Enter your name"
               className="w-full text-2xl p-4 text-center border-0 border-b-2 border-b-blue-500 outline-0"
             />
-            <Button
-              onClick={() => {
-                setStatus("started");
-              }}
-            >
-              Start Quiz
-            </Button>
+            <Button onClick={onStartQuiz}>Start Quiz</Button>
           </div>
         )}
 
         {/* Questions */}
-        {status === "started" && (
+        {quiz.status === "running" && (
           <Fragment>
             <div className="flex-1">
               <div className="text-3xl leading-normal">{question.title}</div>
@@ -87,50 +167,62 @@ export default function Quiz() {
               </div>
               <div
                 className="h-4 w-1/4 bg-blue-500 rounded-full relative transition-all duration-500"
-                style={{ width: `${((index + 1) / questions.length) * 100}%` }}
+                style={{
+                  width: `${((quiz.questionIndex + 1) / questions.length) * 100}%`,
+                }}
               >
                 <div className="absolute right-0 bottom-full text-2xl font-bold">
-                  {index + 1}
+                  {quiz.questionIndex + 1}
                 </div>
               </div>
             </div>
 
             <div className="mt-4 flex justify-between">
               <div>
-                {index !== 0 && (
+                {quiz.questionIndex !== 0 && (
                   <Button
                     onClick={() => {
-                      setIndex(index - 1);
+                      updateQuiz({
+                        questionIndex: quiz.questionIndex - 1,
+                      });
                     }}
                   >
                     Back
                   </Button>
                 )}
               </div>
-              {index < questions.length && (
+              {quiz.questionIndex < questions.length && (
                 <Button
                   onClick={() => {
-                    if (index === questions.length - 1) {
-                      setStatus("done");
-                      setScore(
-                        Object.entries(answers).reduce(
-                          (score, [questionId, optionId]) => {
+                    if (quiz.questionIndex === questions.length - 1) {
+                      setResult(
+                        Object.entries(answers).reduce<any>(
+                          (acc, [questionId, optionId]) => {
                             const q = questions.find((v) => {
                               return v.id === +questionId;
                             });
-                            return q?.rightAnswer == optionId
-                              ? score + 1
-                              : score;
+                            return [
+                              ...acc,
+                              {
+                                ...q,
+                                optionId,
+                                isRight: q?.rightAnswer == optionId,
+                              },
+                            ];
                           },
-                          0
+                          []
                         )
                       );
                       return;
                     }
-                    setIndex(index + 1);
+                    updateQuiz({
+                      questionIndex: quiz.questionIndex + 1,
+                    });
                   }}
                 >
-                  {index === questions.length - 1 ? "Submit" : "Next"}
+                  {quiz.questionIndex === questions.length - 1
+                    ? "Submit"
+                    : "Next"}
                 </Button>
               )}
             </div>
@@ -138,20 +230,13 @@ export default function Quiz() {
         )}
 
         {/* Result */}
-        {status === "done" && (
+        {quiz.status === "done" && (
           <div>
-            {score}
+            {result.reduce((a, b: any) => a + (b.isRight ? 1 : 0), 0)}
             <pre>
-              <code>{JSON.stringify(answers, null, 1)}</code>
+              <code>{JSON.stringify(result, null, 1)}</code>
             </pre>
-            <Button
-              onClick={() => {
-                setStatus("new");
-                setIndex(0);
-              }}
-            >
-              Start Again
-            </Button>
+            <Button onClick={onStartQuiz}>Start Again</Button>
           </div>
         )}
       </div>
