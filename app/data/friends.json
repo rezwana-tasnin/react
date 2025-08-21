@@ -1,0 +1,137 @@
+[
+	{
+		"name": "Lyric",
+		"nickname": "LirKang",
+		"imgs": [
+			"lyric.png",
+			"liru.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Bindu",
+		"nickname": "BeeBee",
+		"imgs": [
+			"bindu.png",
+			"beebee.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Shuchi",
+		"nickname": "Shuvin",
+		"imgs": [
+			"shuchi.png",
+			"shuvin.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Othoi",
+		"nickname": "Othu",
+		"imgs": [
+			"",
+			"othu.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Antora",
+		"nickname": "Antu",
+		"imgs": [
+			"",
+			"antu.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Progga",
+		"nickname": "Poga",
+		"imgs": [
+			"",
+			"poga.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Liza",
+		"nickname": "Lizu",
+		"imgs": [
+			"",
+			"lizu.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Riya",
+		"nickname": "RiyaMoni",
+		"imgs": [
+			"",
+			"riyamoni.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Chadni",
+		"nickname": "Chadu",
+		"imgs": [
+			"",
+			"chadu.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Munira",
+		"nickname": "Mono",
+		"imgs": [
+			"",
+			"mono.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Orthee",
+		"nickname": "Nonodini",
+		"imgs": [
+			"",
+			"nonodini.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Bushra",
+		"nickname": "Bushu",
+		"imgs": [
+			"bushra.png",
+			"bushu.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Prottasha",
+		"nickname": "Vabi",
+		"imgs": [
+			"",
+			"vabi.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Anik",
+		"nickname": "Honey",
+		"imgs": [
+			"anik.png",
+			"honey.png"
+		],
+		"wish": "Happy Birthday"
+	},
+	{
+		"name": "Mastura",
+		"nickname": "Mastu",
+		"imgs": [
+			"mastura.png",
+			"mastu.png"
+		],
+		"wish": "Happy Birthday"
+	}
+]
